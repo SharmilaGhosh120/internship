@@ -11,10 +11,13 @@ Original file is located at
 import streamlit as st
 # Run this in Google Colab+
 import os
+import sqlite3
+import os
 
 # --- DB Functions ---
 def get_connection():
-    return sqlite3.connect("internship_tracking.db", check_same_thread=False)
+    db_path = os.path.join(os.path.dirname(__file__), "internship_tracking.db")
+    return sqlite3.connect(db_path)
 
 def register_student(name, email):
     conn = get_connection()
@@ -62,6 +65,14 @@ def generate_pdf_report(data):
 
 # --- Streamlit UI ---
 st.title("🎓 Internship Tracking System")
+name = st.text_input("Name")
+email = st.text_input("Email")
+if st.button("Register"):
+    if name and email:
+        register_student(name, email)
+        st.success("Student registered!")
+    else:
+        st.error("Please enter name and email.")
 
 menu = ["Register Student", "Log Internship", "Generate Report"]
 choice = st.sidebar.selectbox("Menu", menu)
